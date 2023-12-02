@@ -4,13 +4,15 @@
 + load branches from `.branches` file
 + load all project from list `.orgs` file
 
-start
+## Init
+
+configuration
 ```bash
 chmod +x ./init.sh
 ./init.sh
 ```
 
-
+packages
 ```shell
 python -m pip install requests      # for Python 2.x (if still used)
 python3 -m pip install requests     # for Python 3.x
