@@ -1,8 +1,18 @@
 # [python.multigit.com](http://python.multigit.com)
 
++ [www.multigit.com](http://www.multigit.com)
++ [identity](http://identity.multigit.com)
+
+
+multigit cloning for many different organization, branches, projects on github
 + load projects from `.projects` file
 + load branches from `.branches` file
 + load all project from each organization on `.orgs` file list
+  
+options:
+  + if repo is existing, trying to pull
+  + don't clone forked repo
+  + 
 
 ## Init
 
