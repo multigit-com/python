@@ -2,7 +2,7 @@
 
 + load projects from `.projects` file
 + load branches from `.branches` file
-+ load all project from list `.orgs` file
++ load all project from each organization on `.orgs` file list
 
 ## Init
 
@@ -37,6 +37,13 @@ Please note that you should have appropriate permissions to clone the repositori
 ```bash
 python3 ./multigit.py ~/github
 ```
+
+check list of folders (organizations) and included subfolders (projects)
+```bash
+cd  ~/github
+find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'echo "{}: $(find "{}" -maxdepth 1 -mindepth 1 -type d | wc -l)"' \;
+```
+
 
 ---
 
