@@ -1,3 +1,9 @@
+.idea
+.branches
+.orgs
+.projects
+.token
+
 # Logs
 logs
 *.log
