@@ -6,6 +6,11 @@
 
 ## Init
 
+clone
+```bash
+git clone https://github.com/multigit-com/python.git
+```
+
 configuration
 ```bash
 chmod +x ./init.sh
