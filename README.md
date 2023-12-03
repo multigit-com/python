@@ -26,7 +26,7 @@ git clone https://github.com/multigit-com/python.git
 configuration
 ```bash
 chmod +x ./init.sh
-./init.sh
+./init.sh github-username
 ```
 
 packages

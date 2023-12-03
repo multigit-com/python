@@ -5,7 +5,6 @@ import os
 from urllib.parse import urlparse
 
 
-
 def load_api_token(filename='.token'):
     if os.path.isfile(filename):
         with open(filename, 'r') as file:
@@ -78,34 +77,30 @@ def differenceElementsInArrays(array_a, array_b):
 
 
 def generate_template(words, template_folder, target_project_folder):
+    if not os.path.exists(target_project_folder):
+        os.makedirs(target_project_folder)
     # get list of file from path
     template_path = "templates/" + template_folder
     files = os.listdir(template_path)
-    print(files)
+    # print(files)
 
     for template_file in files:
         template_path_file = template_path + "/" + template_file
+        project_path_file = target_project_folder + "/" + template_file
         print(template_path_file)
-        # remove.template file
-        # if '.template' in files:
-        #    files.remove('.template')
+
         # get file and replace in the template each words from array by names and values {domain: value, organization: value}
         with open(template_path_file, 'r') as file:
             template = file.read()
 
-        # create example array with name and values {domain: value, organization: value}
         # list in for loop value and name from array elements
-
-
-
         for key, value in words.items():
             template = template.replace("{" + key + "}", value)
 
         print(f"Template {template_path_file}: {template}")
-
-    # save the template in path
-    # with open(target_project_folder + "/.template", 'w') as file:
-    #    file.write(template)
+        # save the template in path
+        with open(project_path_file, 'w') as file:
+            file.write(template)
 
 
 # to split up the url to domain name from subdomain
@@ -119,7 +114,7 @@ def get_domain_from_url(url):
 
 
 # Function to extract the domain name without subdomain but with the TLD
-def extract_domain_name(url):
+def extract_domain_name_from_url(url):
     # Parse the URL to get the netloc (network location part)
     netloc = urlparse(url).netloc
 
@@ -133,17 +128,220 @@ def extract_domain_name(url):
     return domain_name
 
 
-
-
-
-
-def get_param_from_repo(repos, repo_name = 'home_page'):
+def get_param_from_repo(repos, repo_name='home_page'):
     if repos:
         for repo in repos:
             if 'clone_url' in repo:
                 if (repo['fork'] == False):
                     return repo[repo_name]
     return None
+
+
+# create repository on github by api call
+def create_repo_on_github(api_token, org_name, repo_name, local_path):
+    # Endpoint to create a repo within an organization
+    url = f'https://api.github.com/orgs/{org_name}/repos'
+    print(url)
+    # Headers for the request, including the authorization token
+    headers = {
+        'Authorization': f'token {api_token}',
+        'Accept': 'application/vnd.github.v3+json',
+    }
+
+    # Data for the new repo
+    data = {
+        'name': repo_name,
+        'private': False  # Set to True if you want a private repository
+    }
+
+    # Make the request
+    response = requests.post(url, json=data, headers=headers)
+
+    # Check the response from GitHub
+    if response.status_code == 201:
+        print(f'Successfully created repo {repo_name} under organization {org_name}.')
+        repo_info = response.json()
+
+        # Navigate to the local path
+        os.chdir(local_path)
+
+        # Initialize the local repository and add the remote
+        os.system(f'git init')
+        os.system(f'git remote add origin {repo_info["ssh_url"]}')
+        os.system(f'git push --set-upstream origin main')
+        os.system(f'git pull')
+        os.system(f'git add .')
+        os.system(f'git commit -m "Initial commit"')
+        os.system(f'git push')
+
+        print(f'Initialized local git repository and added remote origin.')
+
+    else:
+        print('Failed to create repo:', response.content)
+
+
+def create_notexisting_folder(api_token, org_name, repos, path_name, path_folder):
+    expected_folders = fromFilenametoLinesAsArray('.folders')
+    repos_in_orgs = flat_array(repos, 'name')
+    print(repos_in_orgs)
+    # Call the function with your arrays
+    # result = arrayElementsAreIncluded(expected_folders, repos_in_orgs)
+    # print(result)
+    not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
+    print(not_existing_folder)
+    if not_existing_folder:
+        for repo_folder in not_existing_folder:
+            homepage = get_param_from_repo(repos, 'homepage')
+            words = {'domain': extract_domain_name_from_url(homepage), 'homepage': homepage + ".com",
+                     'repository': repo_folder,
+                     'organization': org_name}
+            generate_template(words, repo_folder, path_folder + "/" + repo_folder)
+            # create repository on github by api call
+            create_repo_on_github(api_token, org_name, repo_folder, path_folder + "/" + repo_folder)
+
+    # print(f"Expected folders: {folders} in {org}/{repo['name']}")
+    # exit(1)
+
+    # if not os.path.exists(clone_path):
+    #    os.makedirs(clone_path)
+    #    create project online on github
+
+
+def non_git_folders_in_path(path_folder):
+    files = os.listdir(path_folder)
+    # print(files)
+    folders = []
+    for file in files:
+        current_path = os.path.join(path_folder, file)
+        if folder_exist(current_path + "/" + ".git"):
+            print(f"GIT Exist: {current_path}")
+        else:
+            folders.append(f"{current_path}")
+    return folders
+
+
+def git_folders_in_path(path_folder):
+    files = os.listdir(path_folder)
+    folders = []
+    for file in files:
+        current_path = os.path.join(path_folder, file)
+        if folder_exist(current_path + "/" + ".git"):
+            folders.append(f"{current_path}")
+    return folders
+
+
+# api_token, repos, org_name, path_name
+def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path):
+    # Git not exist, check if exist the remote repo on github
+    remote_repos = flat_array(repos, 'name')
+    print(remote_repos)
+    print(local_path)
+    non_git_local_repos = non_git_folders_in_path(local_path)
+    # print('non_git_local_repos', non_git_local_repos)
+    not_expected_folders = [local_path + '/.idea']
+    # print('not_expected_folders', not_expected_folders)
+    # remove from array existing elements from another array
+    filtered_non_git_folders = differenceElementsInArrays(non_git_local_repos, not_expected_folders)
+    print(filtered_non_git_folders)
+    # not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
+    for repo_folder in filtered_non_git_folders:
+        # get last folder from path
+        repo_name = repo_folder.split('/')[-1]
+        print(repo_name)
+        # create repository on github by api call
+        create_repo_on_github(api_token, org_name, repo_name, repo_folder)
+
+
+def pull_all_repos(local_path):
+    # Git not exist, check if exist the remote repo on github
+    git_local_repos = git_folders_in_path(local_path)
+    # print(git_local_repos)
+    not_expected_folders = [local_path + '/.idea']
+    # remove from array existing elements from another array
+    filtered_non_git_folders = differenceElementsInArrays(git_local_repos, not_expected_folders)
+    print(filtered_non_git_folders)
+    # not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
+    for repo_folder in filtered_non_git_folders:
+        # get last folder from path
+        repo_name = repo_folder.split('/')[-1]
+        print(repo_name)
+        # create repository on github by api call
+
+        # Navigate to the local path
+        os.chdir(repo_folder)
+        # Initialize the local repository and add the remote
+        # os.system(f'git push --set-upstream origin main')
+        os.system(f'git pull')
+        os.system(f'git add .')
+        os.system(f'git commit -m "Initial commit"')
+        os.system(f'git push')
+
+
+def init_local_repo(local_path):
+    git_local_repos = git_folders_in_path(local_path)
+    for repo_folder in git_local_repos:
+        repo_name = repo_folder.split('/')[-1]
+        org_name = repo_folder.split('/')[-2]
+
+        ssh_url = f"git@github.com:{org_name}/{repo_name}.git"
+        #print(repo_folder)
+        #print(ssh_url)
+        # Navigate to the local path
+        os.chdir(repo_folder)
+        # Initialize the local repository and add the remote
+        #os.system(f'git init')
+        #os.system('eval "$(ssh-agent -s)"')
+        os.system(f'ssh-add ~/.ssh/github')
+        #os.system(f'ssh -T git@github.com')
+        os.system(f'ssh -i ~/.ssh/github -T git@github.com')
+        os.system(f'git remote set-url origin {ssh_url}')
+        os.system(f'git remote rm origin')
+        os.system(f'git remote add origin {ssh_url}')
+        os.system(f'git config advice.setUpstreamFailure false"')
+        os.system(f'git config --global push.default current')
+        #os.system(f'git branch --set-upstream-to=origin/main main')
+        #os.system(f'git push --set-upstream origin main')
+        os.system('git pull')
+        #os.system(f'git add .')
+        #os.system(f'git commit -m "Initial commit"')
+        #os.system(f'git push')
+        #exit()
+
+
+
+def push_local_repo(local_path):
+    git_local_repos = git_folders_in_path(local_path)
+    for repo_folder in git_local_repos:
+        repo_name = repo_folder.split('/')[-1]
+        org_name = repo_folder.split('/')[-2]
+
+        ssh_url = f"git@github.com:{org_name}/{repo_name}.git"
+        print(repo_folder)
+        print(ssh_url)
+        # Navigate to the local path
+        os.chdir(repo_folder)
+        # Initialize the local repository and add the remote
+        os.system(f'git pull origin main')
+        os.system(f'git add .')
+        os.system(f'git commit -m "Initial commit"')
+        os.system(f'git push')
+        #exit()
+
+def clone_repos_from_org(org_name, repos, path_name, path_folder):
+    if repos:
+        for repo in repos:
+            if 'clone_url' in repo:
+                if folder_exist(path_folder + "/" + repo['name']):
+                    print(f"Exist: {org_name}/{repo['name']}")
+                    continue
+                if (repo['fork'] == False):
+                    print(f"Clone: {org_name}/{repo['name']}")
+                    # clone_repo(repo['clone_url'], repo['name'], path_folder)
+                else:
+                    print(f"Fork: {org_name}/{repo['name']}")
+                    # if(remove_fork) remove
+    else:
+        print(f"Failed to fetch repositories for organization: {org_name}")
 
 
 if __name__ == "__main__":
@@ -167,52 +365,23 @@ if __name__ == "__main__":
     orgs = fromFilenametoLinesAsArray('.orgs')
 
     # Loop through the organizations and clone their repositories
-    for org in orgs:
+    for org_name in orgs:
         # print(f"Fetching repos for org: {org}")
-        repos = get_repos_from_org(org, headers)
-        # get from array repos of object the 'homepage' value
-
-
-        print(repos)
+        repos = get_repos_from_org(org_name, headers)
+        # print(repos)
 
         path_name = args.path
         # path_name = "~/github"
-        path_folder = path_name + "/" + org
-        create_path(path_folder)
+        local_path = path_name + "/" + org_name
+        create_path(local_path)
 
-        expected_folders = fromFilenametoLinesAsArray('.folders')
-        repos_in_orgs = flat_array(repos, 'name')
-        print(repos_in_orgs)
-        # Call the function with your arrays
-        # result = arrayElementsAreIncluded(expected_folders, repos_in_orgs)
-        # print(result)
-        not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
-        print(not_existing_folder)
-        print("---")
-        if not_existing_folder:
-            for repo_folder in not_existing_folder:
-                homepage = get_param_from_repo(repos, 'homepage')
-                words = {'domain': extract_domain_name(homepage), 'homepage': homepage + ".com", 'repository': repo_folder, 'organization': org}
-                generate_template(words, repo_folder, path_folder + "/" + repo_folder)
+        # clone_repos_from_org(org_name, repos, path_name, local_path)
+        # create_notexisting_folder(api_token, org_name, repos, path_name, local_path)
+        # create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path)
+        # push_all_repos(api_token, org_name, repos, local_path)
+        #pull_all_repos(local_path)
+        #init_local_repo(local_path)
+        push_local_repo(local_path)
         exit()
-        # print(f"Expected folders: {folders} in {org}/{repo['name']}")
-        # exit(1)
-
-        # if not os.path.exists(clone_path):
-        #    os.makedirs(clone_path)
-        #    create project online on github
-        continue
-        if repos:
-            for repo in repos:
-                if 'clone_url' in repo:
-
-                    if (repo['fork'] == False):
-                        print(f"C: {org}/{repo['name']}")
-                        # clone_repo(repo['clone_url'], repo['name'], path_folder)
-                    else:
-                        print(f"F: {org}/{repo['name']}")
-                        # if(remove_fork) remove
-        else:
-            print(f"Failed to fetch repositories for organization: {org}")
 
 # python3 ./multigit.py ~/github
