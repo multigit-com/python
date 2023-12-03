@@ -12,7 +12,9 @@ multigit cloning for many different organization, branches, projects on github
 options:
   + if repo is existing, trying to pull
   + don't clone forked repo
-  + 
+  + check if each project has correct structure, projects, files inside, based on `.structure` file
+    + if they don't have create a repo in org and clone 
+
 
 ## Init
 
