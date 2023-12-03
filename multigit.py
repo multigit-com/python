@@ -139,13 +139,15 @@ def get_param_from_repo(repos, repo_name='homepage'):
 
 
 # create repository on github by api call
-def create_repo_on_github(api_token, org_name, repo_name, local_path):
+def create_repo_on_github(api_token, org_name, repo_name, local_path, description='', homepage="https://github.com"):
     # Endpoint to create a repo within an organization
     url = f'https://api.github.com/orgs/{org_name}/repos'
     print(url)
     # Data for the new repo
     data = {
         'name': repo_name,
+        'description': description,
+        'homepage': homepage,
         'private': False  # Set to True if you want a private repository
     }
 
@@ -175,7 +177,7 @@ def create_repo_on_github(api_token, org_name, repo_name, local_path):
         print('Failed to create repo:', response.content)
 
 
-def create_notexisting_folder(api_token, org_name, repos, path_name, path_folder):
+def create_notexisting_folder(api_token, org_name, repos, path_folder, domain, homepage):
     expected_folders = fromFilenametoLinesAsArray('.folders')
     repos_in_orgs = flat_array(repos, 'name')
     print(repos_in_orgs)
@@ -186,21 +188,14 @@ def create_notexisting_folder(api_token, org_name, repos, path_name, path_folder
     print(not_existing_folder)
     if not_existing_folder:
         for repo_folder in not_existing_folder:
-            homepage = get_param_from_repo(repos, 'homepage')
-            if not homepage:
-                # set_github_pages_domain(api_token, org_name, domain)
-                # homepage = f'{org_name}.github.io/{repo_folder}'
-                exit(f"Failed to set homepage for repo: {repo_folder}")
-
             words = {
-                'domain': extract_domain_name_from_url(homepage),
-                #'homepage': homepage + ".com",
+                'domain': domain,
                 'homepage': homepage,
                 'repository': repo_folder,
                 'organization': org_name,
                 'branch': get_param_from_repo(repos, 'default_branch')
             }
-            template_path = os.path.dirname( os.path.realpath(__file__) ) + "/templates/" + repo_folder
+            template_path = os.path.dirname(os.path.realpath(__file__)) + "/templates/" + repo_folder
             print(template_path)
             generate_template(words, template_path, path_folder + "/" + repo_folder)
             # create repository on github by api call
@@ -253,7 +248,7 @@ def configure_github_pages_branch(api_token, org_name, branch='main'):
         pages_url = repo['url'] + '/pages'
 
         # Get the current GitHub Pages configuration
-        pages_config_response = requests.get(pages_url, headers=headers)
+        pages_config_response = requests.get(pages_url, headers=getHeaders(api_token))
 
         if pages_config_response.status_code == 200:
             # Update the existing GitHub Pages configuration
@@ -264,7 +259,7 @@ def configure_github_pages_branch(api_token, org_name, branch='main'):
                 }
             }
             # Send the PATCH request to update the configuration
-            update_response = requests.patch(pages_url, json=pages_data, headers=headers)
+            update_response = requests.patch(pages_url, json=pages_data, headers=getHeaders(api_token))
 
             if update_response.status_code == 200:
                 print(f"Updated GitHub Pages source branch to '{branch}' for repo: {repo_name}")
@@ -282,6 +277,7 @@ def set_github_pages_domain(api_token, org_name, domain):
     # Iterate over all pages of repositories
     while url:
         response = requests.get(url, headers=getHeaders(api_token))
+        print(url)
 
         if response.status_code != 200:
             print('Failed to retrieve repositories:', response.content)
@@ -295,21 +291,26 @@ def set_github_pages_domain(api_token, org_name, domain):
             else:
                 subdomain = repo['name'] + "." + domain
 
-            result = get_repository_list_wtih_github_pages(api_token, org_name, repo['name'])
-            #print(result)
-            if not result:
-                result = enable_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
+            print("0", repo['name'])
 
+            result = get_repository_list_wtih_github_pages(api_token, org_name, repo['name'])
+            print("1", result)
+            # repo['default_branch']
+            branch = 'main'
+
+            if not result:
+                result = enable_github_pages(api_token, org_name, repo['name'], branch, subdomain)
+
+            print('2', result)
 
             if result and not result['cname']:
-                result = update_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
+                result = update_github_pages(api_token, org_name, repo['name'], branch, subdomain)
 
-            #print(result)
+            print('3', result)
 
-                #if (result['status'] == 'built'):
+            # if (result['status'] == 'built'):
 
-            #update_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
-
+            # update_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
 
         # Fetch the next page of repositories, if available
         url = response.links.get('next', {}).get('url', None)
@@ -339,7 +340,7 @@ def git_folders_in_path(path_folder):
 
 
 # api_token, repos, org_name, path_name
-def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path):
+def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, description, homepage):
     # Git not exist, check if exist the remote repo on github
     remote_repos = flat_array(repos, 'name')
     print(remote_repos)
@@ -357,7 +358,7 @@ def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path):
         repo_name = repo_folder.split('/')[-1]
         print(repo_name)
         # create repository on github by api call
-        create_repo_on_github(api_token, org_name, repo_name, repo_folder)
+        create_repo_on_github(api_token, org_name, repo_name, repo_folder, description, homepage)
 
 
 def pull_all_repos(local_path):
@@ -406,10 +407,16 @@ def init_local_repo(local_path):
         os.system(f'git remote rm origin')
         os.system(f'git remote add origin {ssh_url}')
         os.system(f'git config advice.setUpstreamFailure false"')
+        os.system(f'git branch -m master main')
+        os.system(f'git fetch origin')
+        os.system(f'git branch -u origin/main main')
+        os.system(f'git remote set-head origin -a')
         os.system(f'git config --global push.default current')
-        # os.system(f'git branch --set-upstream-to=origin/main main')
+        os.system(f'git branch --set-upstream-to=origin/main main')
         # os.system(f'git push --set-upstream origin main')
         os.system('git pull')
+        #os.system(f'git pull origin main')
+
         # os.system(f'git add .')
         # os.system(f'git commit -m "Initial commit"')
         # os.system(f'git push')
@@ -452,7 +459,6 @@ def clone_repos_from_org(org_name, repos, path_name, path_folder):
         print(f"Failed to fetch repositories for organization: {org_name}")
 
 
-
 def update_github_pages(api_token, org_name, repo_name, branch='main', domain=None, path='/'):
     url = f'https://api.github.com/repos/{org_name}/{repo_name}/pages'
     data = {
@@ -461,18 +467,17 @@ def update_github_pages(api_token, org_name, repo_name, branch='main', domain=No
             "branch": branch,
             "path": path
         }
+        # 'https_enforced': False,
+        # 'protected_domain_state': 'verified'
     }
     print('data', data)
-    response = requests.put(url, json=data, headers=getHeaders(api_token))
+    response = requests.put(url, json=data, headers=getHeaders2(api_token))
 
-    if response.status_code == 201:
-        print(f"GitHub Pages enabled for {repo_name} with branch '{branch}'.")
-        if domain:
-            print("Custom domain set to:", domain)
+    if response.status_code in (200, 201):
+        print(f"GitHub Pages configuration updated for repository: {repo_name}")
     else:
-        print("Failed to enable GitHub Pages. Status code:", response.status_code)
-        print("Response:", response.json())
-
+        print(f"Failed to update GitHub Pages configuration. Status code: {response.status_code}")
+        print(f"Response: {response.json()}")
 
 
 def enable_github_pages(api_token, org_name, repo_name, branch='main', domain=None, path='/'):
@@ -502,7 +507,10 @@ def getHeaders(api_token):
         'Accept': 'application/vnd.github.v+json',
         'X-GitHub-Api-Version': '2022-11-28',
     }
-    headers = {
+
+
+def getHeaders2(api_token):
+    return {
         'Authorization': f'token {api_token}',
         'Accept': 'application/vnd.github.v3+json',
     }
@@ -517,6 +525,41 @@ def get_repository_list_wtih_github_pages(api_token, org_name, repo_name):
     else:
         print("Failed to fetch GitHub Pages. Status code:", response.status_code)
         print("Response:", response.json())
+
+
+
+# Function to change the default branch to 'main' for all organization repos
+def change_default_branch_to_main(api_token, org_name, name = '', description = '', homepage = ''):
+    # Retrieve a list of all repositories within the organization
+    repos_url = f'https://api.github.com/orgs/{org_name}/repos?per_page=100'
+    repos_response = requests.get(repos_url, headers=getHeaders(api_token))
+
+    if repos_response.status_code != 200:
+        print(f"Failed to retrieve repositories: {repos_response.content}")
+        return
+
+    for repo in repos_response.json():
+        repo_name = repo['name']
+        repo_url = f"https://api.github.com/repos/{org_name}/{repo_name}"
+
+        # Change the default branch
+        data = {
+            #"name": repo_name,
+            #"description": repo_name,
+            #"homepage": homepage,
+            "default_branch": "main",
+            "private": False,
+            "has_issues": True,
+            "has_projects": True,
+            "has_wiki": True
+        }
+        patch_response = requests.patch(repo_url, headers=getHeaders(api_token), json=data)
+
+        if patch_response.status_code in (200, 202):
+            print(f"Default branch updated to 'main' for repo: {repo_name}")
+        else:
+            print(f"Failed to update default branch for repo: {repo_name}")
+        print(f"Status code: {patch_response.status_code}, Response: {patch_response.json()}")
 
 
 """
@@ -550,39 +593,55 @@ if __name__ == "__main__":
 
     # Loop through the organizations and clone their repositories
     for org_name in orgs:
-        # print(f"Fetching repos for org: {org}")
+    # print(f"Fetching repos for org: {org}")
         repos = get_repos_from_org(org_name, headers)
-        # print(repos)
+    # print(repos)
 
         path_name = args.path
         # path_name = "~/github"
         local_path = path_name + "/" + org_name
         create_path(local_path)
 
-        print(org_name)
-        domain = 'plainmark.com'
-        #branch = 'master'
+        domain = org_name + '.com'
+        #domain = 'ndof.org'
+        # branch = 'master'
         branch = 'main'
         repo_name = 'identity'
+        # exit()
+        homepage = get_param_from_repo(repos, 'homepage')
+        #print(homepage)
+
+        if homepage:
+            # set_github_pages_domain(api_token, org_name, domain)
+            # homepage = f'{org_name}.github.io/{repo_folder}'
+            domain = extract_domain_name_from_url(homepage)
+
+        #print(domain)
         #exit()
+        if not homepage:
+            homepage = 'http://www.' + domain
 
-        #print(f'{org_name} / {repo_name} / {branch}..')
+        description = repo_name + ', ' + homepage
 
-        # clone_repos_from_org(org_name, repos, path_name, local_path)
-        create_notexisting_folder(api_token, org_name, repos, path_name, local_path)
-        create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path)
-
-
-        #enable_github_pages(api_token, org_name, repo_name, branch, subdomain)
-        #configure_github_pages_branch(api_token, org_name, 'main')
-        # configure_github_pages_domain(api_token, org_name, domain)
+        print(org_name, domain, homepage, description)
+        #change_default_branch_to_main(api_token, org_name, repo_name, description, homepage)
         set_github_pages_domain(api_token, org_name, domain)
+        # clone_repos_from_org(org_name, repos, path_name, local_path)
+        create_notexisting_folder(api_token, org_name, repos, local_path, domain, homepage)
+        # exit()
+        create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, description, homepage)
+        change_default_branch_to_main(api_token, org_name)
 
         # push_all_repos(api_token, org_name, repos, local_path)
         # pull_all_repos(local_path)
         init_local_repo(local_path)
         push_local_repo(local_path)
+
+        # configure_github_pages_branch(api_token, org_name, 'main')
+        # configure_github_pages_domain(api_token, org_name, domain)
+        # print(f'{org_name} / {repo_name} / {branch}..')
+        set_github_pages_domain(api_token, org_name, domain)
+
         exit()
 
-
-# python3 ./multigit.py ~/github
+    # python3 ./multigit.py ~/github
