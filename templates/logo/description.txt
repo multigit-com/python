@@ -1,1 +1,1 @@
- documentation: {organization} - {domain} - {repo}
+Logo Documentation {domain} on repository {repository} for {organization}

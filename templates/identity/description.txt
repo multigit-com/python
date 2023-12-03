@@ -1,1 +1,1 @@
-documentation: {organization} - {domain} - {repo}
+Identity {domain} on repository {repository} for {organization}

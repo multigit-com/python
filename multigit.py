@@ -139,7 +139,7 @@ def get_param_from_repo(repos, repo_name='homepage'):
 
 
 # create repository on github by api call
-def create_repo_on_github(api_token, org_name, repo_name, local_path, description='', homepage="https://github.com"):
+def create_repo_on_github(api_token, org_name, repo_name, local_path, description, domain):
     # Endpoint to create a repo within an organization
     url = f'https://api.github.com/orgs/{org_name}/repos'
     print(url)
@@ -147,7 +147,7 @@ def create_repo_on_github(api_token, org_name, repo_name, local_path, descriptio
     data = {
         'name': repo_name,
         'description': description,
-        'homepage': homepage,
+        'homepage': "http://" + repo_name + "." + domain,
         'private': False  # Set to True if you want a private repository
     }
 
@@ -177,7 +177,15 @@ def create_repo_on_github(api_token, org_name, repo_name, local_path, descriptio
         print('Failed to create repo:', response.content)
 
 
-def create_notexisting_folder(api_token, org_name, repos, path_folder, domain, homepage):
+def load_file(filename):
+    if os.path.isfile(filename):
+        with open(filename, 'r') as file:
+            return file.read()
+    else:
+        print(f"{filename} file does not exist")
+
+
+def create_notexisting_folder(api_token, org_name, repos, path_folder, domain):
     expected_folders = fromFilenametoLinesAsArray('.folders')
     repos_in_orgs = flat_array(repos, 'name')
     print(repos_in_orgs)
@@ -190,16 +198,18 @@ def create_notexisting_folder(api_token, org_name, repos, path_folder, domain, h
         for repo_folder in not_existing_folder:
             words = {
                 'domain': domain,
-                'homepage': homepage,
+                'homepage': "http://" + repo_folder + "." + domain,
                 'repository': repo_folder,
                 'organization': org_name,
                 'branch': get_param_from_repo(repos, 'default_branch')
             }
             template_path = os.path.dirname(os.path.realpath(__file__)) + "/templates/" + repo_folder
             print(template_path)
-            generate_template(words, template_path, path_folder + "/" + repo_folder)
+            target_path=path_folder + "/" + repo_folder
+            generate_template(words, template_path, target_path)
+            description = load_file(target_path + "/description.txt")
             # create repository on github by api call
-            create_repo_on_github(api_token, org_name, repo_folder, path_folder + "/" + repo_folder)
+            create_repo_on_github(api_token, org_name, repo_folder, target_path, description, domain)
 
 
 # Function to configure GitHub Pages within a repo of an organization
@@ -340,7 +350,7 @@ def git_folders_in_path(path_folder):
 
 
 # api_token, repos, org_name, path_name
-def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, description, homepage):
+def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, domain):
     # Git not exist, check if exist the remote repo on github
     remote_repos = flat_array(repos, 'name')
     print(remote_repos)
@@ -358,7 +368,8 @@ def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, d
         repo_name = repo_folder.split('/')[-1]
         print(repo_name)
         # create repository on github by api call
-        create_repo_on_github(api_token, org_name, repo_name, repo_folder, description, homepage)
+        description = load_file(repo_folder + "/description.txt")
+        create_repo_on_github(api_token, org_name, repo_name, repo_folder, description, domain)
 
 
 def pull_all_repos(local_path):
@@ -477,7 +488,7 @@ def update_github_pages(api_token, org_name, repo_name, branch='main', domain=No
         print(f"GitHub Pages configuration updated for repository: {repo_name}")
     else:
         print(f"Failed to update GitHub Pages configuration. Status code: {response.status_code}")
-        print(f"Response: {response.json()}")
+        #print(f"Response: {response.json()}")
 
 
 def enable_github_pages(api_token, org_name, repo_name, branch='main', domain=None, path='/'):
@@ -624,12 +635,14 @@ if __name__ == "__main__":
         description = repo_name + ', ' + homepage
 
         print(org_name, domain, homepage, description)
+        #exit()
         #change_default_branch_to_main(api_token, org_name, repo_name, description, homepage)
         set_github_pages_domain(api_token, org_name, domain)
         # clone_repos_from_org(org_name, repos, path_name, local_path)
-        create_notexisting_folder(api_token, org_name, repos, local_path, domain, homepage)
+        create_notexisting_folder(api_token, org_name, repos, local_path, domain)
         # exit()
-        create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, description, homepage)
+        create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, domain)
+
         change_default_branch_to_main(api_token, org_name)
 
         # push_all_repos(api_token, org_name, repos, local_path)
@@ -640,6 +653,7 @@ if __name__ == "__main__":
         # configure_github_pages_branch(api_token, org_name, 'main')
         # configure_github_pages_domain(api_token, org_name, domain)
         # print(f'{org_name} / {repo_name} / {branch}..')
+        set_github_pages_domain(api_token, org_name, domain)
         set_github_pages_domain(api_token, org_name, domain)
 
         exit()
