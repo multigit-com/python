@@ -186,7 +186,11 @@ def load_file(filename):
 
 
 def create_notexisting_folder(api_token, org_name, repos, path_folder, domain):
-    expected_folders = fromFilenametoLinesAsArray('.folders')
+    folders_path = os.path.dirname(os.path.realpath(__file__)) + "/.folders"
+    expected_folders = fromFilenametoLinesAsArray(folders_path)
+    if not expected_folders:
+        exit()
+    #print(repos)
     repos_in_orgs = flat_array(repos, 'name')
     print(repos_in_orgs)
     # Call the function with your arrays
@@ -194,6 +198,7 @@ def create_notexisting_folder(api_token, org_name, repos, path_folder, domain):
     # print(result)
     not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
     print(not_existing_folder)
+
     if not_existing_folder:
         for repo_folder in not_existing_folder:
             words = {
@@ -614,7 +619,7 @@ if __name__ == "__main__":
         create_path(local_path)
 
         domain = org_name + '.com'
-        #domain = 'ndof.org'
+        #domain = 'finofficer.com'
         # branch = 'master'
         branch = 'main'
         repo_name = 'identity'
@@ -656,6 +661,6 @@ if __name__ == "__main__":
         set_github_pages_domain(api_token, org_name, domain)
         set_github_pages_domain(api_token, org_name, domain)
 
-        exit()
+        #exit()
 
     # python3 ./multigit.py ~/github

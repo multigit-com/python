@@ -7,7 +7,7 @@ how modular architecture works in real life with examples
 + [logo](http://logo.{domain})
 + [roadmap](http://identity.{domain})
 + [identity](http://identity.{domain})
-+ [contriubtion](http://contriubtion.{domain})
++ [contribution](http://contribution.{domain})
 
 ---
 
