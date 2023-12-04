@@ -62,6 +62,8 @@ find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'echo "{}: $(find "{}" -maxde
 API documentation
 + [Pages - GitHub Docs](https://docs.github.com/en/rest/pages/pages?apiVersion=2022-11-28#create-a-apiname-pages-site)
 
+## Another solution
++ [git-repo - Git at Google](https://gerrit.googlesource.com/git-repo)
 
 
 ---
