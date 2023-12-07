@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../')
-from function.folder_exist import folder_exist
+from local.folder_exist import folder_exist
 import os
 
 

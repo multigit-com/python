@@ -1,7 +1,7 @@
 import requests
 import sys
 sys.path.append('../')
-from function.getHeaders import getHeaders
+from github.getHeaders import getHeaders
 
 
 def update_repo_on_github(api_token, org_name, repo_name, description, domain):
@@ -13,12 +13,15 @@ def update_repo_on_github(api_token, org_name, repo_name, description, domain):
         'name': repo_name,
         'description': description,
         'homepage': "http://" + repo_name + "." + domain,
-        'html_url': "http://" + repo_name + "." + domain,
+        #'html_url': "http://" + repo_name + "." + domain,
         #'private': False  # Set to True if you want a private repository
+        "has_issues": True,
+        "has_projects": True,
+        "has_wiki": True
     }
 
     # Make the request
-    response = requests.put(url, json=data, headers=getHeaders(api_token))
+    response = requests.patch(url, json=data, headers=getHeaders(api_token))
 
     # Check the response from GitHub
     if response.status_code == 201:

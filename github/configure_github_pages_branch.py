@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../')
-from function.getHeaders import getHeaders
+from github.getHeaders import getHeaders
 import requests
 
 

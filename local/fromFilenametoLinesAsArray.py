@@ -1,7 +1,5 @@
 import os
 
-
-
 def fromFilenametoLinesAsArray(filename='.folders'):
     lines = None
     if os.path.isfile(filename):

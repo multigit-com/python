@@ -1,9 +1,9 @@
 import sys
 sys.path.append('../')
-from function.get_repository_list_wtih_github_pages import get_repository_list_wtih_github_pages
-from function.getHeaders import getHeaders
-from function.enable_github_pages import enable_github_pages
-from function.update_github_pages import update_github_pages
+from github.get_repository_list_wtih_github_pages import get_repository_list_wtih_github_pages
+from github.getHeaders import getHeaders
+from github.enable_github_pages import enable_github_pages
+from github.update_github_pages import update_github_pages
 import requests
 
 

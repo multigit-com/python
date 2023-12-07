@@ -1,9 +1,7 @@
 import sys
 sys.path.append('../')
-from function.folder_exist import folder_exist
+from local.folder_exist import folder_exist
 import os
-
-
 
 def non_git_folders_in_path(path_folder):
     files = os.listdir(path_folder)

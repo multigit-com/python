@@ -1,10 +1,10 @@
 import sys
 sys.path.append('../')
-from function.getHeaders import getHeaders
+from github.getHeaders import getHeaders
 import requests
 
 
-def change_default_branch_to_main(api_token, org_name, name = '', description = '', homepage = ''):
+def change_default_branch(api_token, org_name, default_branch='main'):
     # Retrieve a list of all repositories within the organization
     repos_url = f'https://api.github.com/orgs/{org_name}/repos?per_page=100'
     repos_response = requests.get(repos_url, headers=getHeaders(api_token))
@@ -22,11 +22,11 @@ def change_default_branch_to_main(api_token, org_name, name = '', description = 
             #"name": repo_name,
             #"description": repo_name,
             #"homepage": homepage,
-            "default_branch": "main",
-            "private": False,
-            "has_issues": True,
-            "has_projects": True,
-            "has_wiki": True
+            "default_branch": default_branch,
+            #"private": False,
+            #"has_issues": True,
+            #"has_projects": True,
+            #"has_wiki": True
         }
         patch_response = requests.patch(repo_url, headers=getHeaders(api_token), json=data)
 

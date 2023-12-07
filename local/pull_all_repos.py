@@ -1,9 +1,8 @@
 import sys
 sys.path.append('../')
-from function.git_folders_in_path import git_folders_in_path
+from local.git_folders_in_path import git_folders_in_path
 from function.differenceElementsInArrays import differenceElementsInArrays
 import os
-
 
 
 def pull_all_repos(local_path):

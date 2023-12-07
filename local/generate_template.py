@@ -6,6 +6,10 @@ def generate_template(words, template_path, target_project_folder):
     # get list of file from path
     files = os.listdir(template_path)
     print(files)
+    print(words)
+    if not words:
+        print(f"words {words} does not exist")
+        exit(1)
 
     for template_file in files:
         template_path_file = template_path + "/" + template_file

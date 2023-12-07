@@ -31,4 +31,4 @@ from function.enable_github_pages import enable_github_pages
 from function.getHeaders import getHeaders
 from function.getHeaders2 import getHeaders2
 from function.get_repository_list_wtih_github_pages import get_repository_list_wtih_github_pages
-from function.change_default_branch_to_main import change_default_branch_to_main
+from function.change_default_branch import change_default_branch

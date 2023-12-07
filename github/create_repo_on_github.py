@@ -2,7 +2,7 @@ import requests
 import os
 import sys
 sys.path.append('../')
-from function.getHeaders import getHeaders
+from github.getHeaders import getHeaders
 
 def create_repo_on_github(api_token, org_name, repo_name, local_path, description, domain):
     # Endpoint to create a repo within an organization
