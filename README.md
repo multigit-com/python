@@ -36,6 +36,14 @@ python3 -m pip install requests     # for Python 3.x
 ```
 
 
+## refactoring
+
+```shell
+python3 splitup.py multigit.py function
+python3 depend.py function
+```
+
+
 ## How to start
 
 The script [multigit.py](multigit.py) executes a shell command (`git clone`) for each repository. This command requires that you have git installed and properly configured on your system.
