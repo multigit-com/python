@@ -1,20 +1,20 @@
-import requests
-import os
 import sys
 sys.path.append('../')
+import requests
 from github.getHeaders import getHeaders
 
-def create_repo_on_github(api_token, org_name, repo_name, local_path, description, domain):
-    # Endpoint to create a repo within an organization
+
+def create_repo_on_github(api_token, org_name, repo_folder, description="This is your first repository", domain = 'legacycode.info'):
     url = f'https://api.github.com/orgs/{org_name}/repos'
     print(url)
-    # Data for the new repo
     data = {
-        'name': repo_name,
-        'description': description,
-        'homepage': "http://" + repo_name + "." + domain,
-        'html_url': "http://" + repo_name + "." + domain,
-        'private': False  # Set to True if you want a private repository
+        'name': repo_folder,
+        "description": description,
+        "homepage": "https://" + domain,
+        "private": False,
+        "has_issues": True,
+        "has_projects": True,
+        "has_wiki": True
     }
 
     # Make the request
@@ -22,22 +22,8 @@ def create_repo_on_github(api_token, org_name, repo_name, local_path, descriptio
 
     # Check the response from GitHub
     if response.status_code == 201:
-        print(f'Successfully created repo {repo_name} under organization {org_name}.')
-        repo_info = response.json()
-
-        # Navigate to the local path
-        os.chdir(local_path)
-
-        # Initialize the local repository and add the remote
-        os.system(f'git init')
-        os.system(f'git remote add origin {repo_info["ssh_url"]}')
-        os.system(f'git push --set-upstream origin main')
-        os.system(f'git pull')
-        os.system(f'git add .')
-        os.system(f'git commit -m "Initial commit"')
-        os.system(f'git push')
-
-        print(f'Initialized local git repository and added remote origin.')
-
+        print(f'created repo {repo_folder} under organization {org_name}.')
     else:
         print('Failed to create repo:', response.content)
+
+    return response

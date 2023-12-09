@@ -5,9 +5,8 @@ from function.differenceElementsInArrays import differenceElementsInArrays
 from local.fromFilenametoLinesAsArray import fromFilenametoLinesAsArray
 from local.generate_template import generate_template
 from local.load_file import load_file
-from github.create_repo_on_github import create_repo_on_github
 from github.get_param_from_repo import get_param_from_repo
-import os
+from github.create_repo_on_github_and_local import create_repo_on_github_and_local
 
 
 
@@ -44,4 +43,4 @@ def create_notexisting_folder(api_token, org_name, repos, path_folder, domain, r
             generate_template(words, template_path, target_path)
             description = load_file(target_path + "/description.txt")
             # create repository on github by api call
-            create_repo_on_github(api_token, org_name, repo_folder, target_path, description, domain)
+            create_repo_on_github_and_local(api_token, org_name, repo_folder, target_path, description, domain)
