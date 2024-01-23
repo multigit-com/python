@@ -17,6 +17,20 @@ options:
 
 
 ## Init
+python update
+```bash
+python -m pip install --upgrade pip
+```
+
+init requirements
+```bash
+pip freeze > requirements.txt
+```
+
+install dependencies
+```bash
+pip install -r requirements.txt
+```
 
 clone
 ```bash
