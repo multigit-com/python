@@ -1,5 +1,5 @@
 from urllib.parse import urlparse
-
+# Extract the domain name from a URL
 def extract_domain_name_from_url(url):
     domain_name = None
     if (url):

@@ -65,6 +65,29 @@ find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'echo "{}: $(find "{}" -maxde
 ```
 
 
+
+
+# ? optional parameter
+# ! mandatory parameter
+# : equivalent name of function parameter
+# Object: repo_descr="description of github repository"
+# Example: Update description "Description for my " on gitHub repository myrepo on GitHub
+# Update description !description on gitHub repository !name:repo_name
+update_repo_on_github(api_token, org_name, repo_name, description, domain):
+
+
+# Text To Service
+
++ by voice
++ by shell
++ by web app
++ 
+
+## API handler
+
+## Test framework
+
+
 ## More
 
 API documentation

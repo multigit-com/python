@@ -21,7 +21,7 @@ def set_github_pages_domain(api_token, org_name, domain):
         # Loop over each repo and set the GitHub Pages domain
         for repo in response.json():
             if repo['name'] == '.github':
-                subdomain = "www" + "." + domain
+                #subdomain = "www" + "." + domain
                 continue
             else:
                 subdomain = repo['name'] + "." + domain

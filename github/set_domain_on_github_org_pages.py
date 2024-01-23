@@ -1,11 +1,12 @@
 import sys
 sys.path.append('../')
+from github.get_repos import get_repos
 from github.getHeaders import getHeaders
 import requests
 
-
-
-def configure_github_pages_domain(api_token, org_name, domain):
+# List all repositories in the organization
+# Set your custom domain (must be configured in your DNS) for each repository in Organisation
+def set_domain_on_github_org_pages(api_token, org_name, domain):
     # List all repositories in the organization
     repos_url = f'https://api.github.com/orgs/{org_name}/repos'
     response = requests.get(repos_url, headers=getHeaders(api_token))
@@ -14,14 +15,10 @@ def configure_github_pages_domain(api_token, org_name, domain):
         print('Failed to retrieve repositories:', response.content)
         return
 
-    for repo in response.json():
+    for repo in get_repos(api_token, org_name).json():
         # If GitHub Pages API allows enabling Pages, the code would be similar to this:
         pages_url = repo['url'] + '/pages'
         pages_data = {
-            'source': {
-                'branch': 'main',  # Assuming the branch with your site content is named 'gh-pages'
-                'path': '/'  # The root path where your site is located
-            },
             'cname': domain,  # Set your custom domain (must be configured in your DNS)
             # Any additional settings...
         }

@@ -4,6 +4,7 @@ import sys
 sys.path.append('../')
 from github.create_repo_on_github import create_repo_on_github
 
+# Initialize the local project and add the remote GitHub
 def create_repo_on_github_and_local(api_token, org_name, repo_folder, local_path, description, domain):
     # Endpoint to create a repo within an organization
     response = create_repo_on_github(api_token, org_name, repo_folder, description, domain)

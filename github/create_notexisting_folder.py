@@ -9,7 +9,10 @@ from github.get_param_from_repo import get_param_from_repo
 from github.create_repo_on_github_and_local import create_repo_on_github_and_local
 
 
-
+# check the expected repository list and create if they are not existing on github organisation
+# load each line as repository name from '.folders' file, if the repository not existing, create the folder and create the repository on github
+# load the description of the repository from '.description.txt' file
+# load the default branch from '.default_branch.txt' file
 def create_notexisting_folder(api_token, org_name, repos, path_folder, domain, root_path, default_branch = 'main'):
     folders_path = root_path + "/.folders"
     expected_folders = fromFilenametoLinesAsArray(folders_path)

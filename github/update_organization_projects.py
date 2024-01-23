@@ -4,47 +4,35 @@ sys.path.append('../')
 from function.extract_domain_name_from_url import extract_domain_name_from_url
 from github.change_default_branch import change_default_branch
 from github.create_notexisting_folder import create_notexisting_folder
-from github.create_repo_on_github import create_repo_on_github
+from github.defaults import defaults
 from github.set_github_pages_domain import set_github_pages_domain
 from local.create_path import create_path
 from local.init_local_repo import init_local_repo
 from local.push_local_repo import push_local_repo
 from local.clone_repo import clone_repo
+from github.set_domain_on_github_org_pages import set_domain_on_github_org_pages
 
 
+# url: https://developer.github.com/v3/repos/#create-a-repository
+# Connect to Github by {API token|api_token|GITHUB_API_TOKEN}
+# Connect to Github by:
+## human: API token
+## code: api_token
+## env: GITHUB_API_TOKEN
+#
 def update_organization_projects(api_token, org_name, repos, path_name):
     # print(repos)
-    # path_name = "~/github"
     local_path = path_name + "/" + org_name
     create_path(local_path)
 
-    # domain = org_name + '.com'
-    domain = 'legacycode.info'
-    # branch = 'master'
-    branch = 'main'
-    repo_name = 'identity'
-    # exit()
-    homepage = ''
-    # homepage = get_param_from_repo(repos, 'homepage')
-    # print(homepage)
+    domain, homepage, description = defaults('moduletool.com', 'main', 'identity','')
 
-    if homepage:
-        # set_github_pages_domain(api_token, org_name, domain)
-        # homepage = f'{org_name}.github.io/{repo_folder}'
-        domain = extract_domain_name_from_url(homepage)
-
-    # print(domain)
-    # exit()
-    if not homepage:
-        homepage = 'http://www.' + domain
-
-    description = repo_name + ', ' + homepage
-
-    print(org_name, domain, homepage, description)
+    #print(org_name, domain, homepage, description)
     #create_repo_on_github(api_token, org_name, repo_name, description, domain)
     #exit()
-    set_github_pages_domain(api_token, org_name, domain)
-    exit()
+    #set_domain_on_github_org_pages(api_token, org_name, domain)
+    #set_github_pages_domain(api_token, org_name, domain)
+    #exit()
 
     # update_repo_on_github(api_token, org_name, repo_name, description, domain)
     if repos:

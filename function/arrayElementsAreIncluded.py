@@ -1,4 +1,4 @@
-
+# difference between two arrays
 def arrayElementsAreIncluded(array_a, array_b):
     # Convert both lists to sets
     set_a = set(array_a)

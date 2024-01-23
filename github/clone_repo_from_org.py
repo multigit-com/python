@@ -4,6 +4,7 @@ from function.extract_domain_name_from_url import extract_domain_name_from_url
 from local.clone_repo import clone_repo
 from local.create_path import create_path
 
+# Clone a repository from a GitHub organization
 def clone_repo_from_org(org_name, repo_name, local_path= "~/github"):
     local_path = local_path + "/" + org_name
     create_path(local_path)

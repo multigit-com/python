@@ -1,0 +1,7 @@
+PATH,FUNCTION,DESCRIPTION,INPUT,OUTPUT
+function/flat_array.py,flat_array,,"original_array, by_name='value'",
+function/arrayElementsAreIncluded.py,arrayElementsAreIncluded,,"array_a, array_b",
+function/differenceElementsInArrays.py,differenceElementsInArrays,,"array_a, array_b",
+function/get_subdomain_from_url.py,get_subdomain_from_url,,url,
+function/get_domain_from_url.py,get_domain_from_url,,url,
+function/extract_domain_name_from_url.py,extract_domain_name_from_url,,url,

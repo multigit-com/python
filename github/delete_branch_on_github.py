@@ -3,7 +3,7 @@ sys.path.append('../')
 import requests
 from github.getHeaders import getHeaders
 
-
+# Delete branch remote branch on github
 def delete_branch_on_github(api_token, org_name, repo_name, branch):
     url = f'https://api.github.com/repos/{org_name}/{repo_name}/git/refs/heads/{branch}'
     print(url)

@@ -4,38 +4,20 @@ sys.path.append('../')
 from function.extract_domain_name_from_url import extract_domain_name_from_url
 from github.set_github_pages_domain import set_github_pages_domain
 from local.create_path import create_path
-from local.create_repo_on_not_git_repo_folder import create_repo_on_not_git_repo_folder
+from github.create_repo_on_not_git_repo_folder import create_repo_on_not_git_repo_folder
 from local.init_local_repo import init_local_repo
 from local.push_local_repo import push_local_repo
+from github.defaults import defaults
+from github.create_repo_on_github_and_local import create_repo_on_github_and_local
 
 
-def new_organization_scenario(api_token, repos, org_name, path_name):
+def new_organization_scenario(api_token, repos, org_name, repo_name, path_name):
     # print(repos)
     # path_name = "~/github"
     local_path = path_name + "/" + org_name
     create_path(local_path)
 
-    # domain = org_name + '.com'
-    domain = 'legacycode.info'
-    # branch = 'master'
-    branch = 'main'
-    repo_name = 'identity'
-    # exit()
-    homepage = ''
-    # homepage = get_param_from_repo(repos, 'homepage')
-    # print(homepage)
-
-    if homepage:
-        # set_github_pages_domain(api_token, org_name, domain)
-        # homepage = f'{org_name}.github.io/{repo_folder}'
-        domain = extract_domain_name_from_url(homepage)
-
-    # print(domain)
-    # exit()
-    if not homepage:
-        homepage = 'http://www.' + domain
-
-    description = repo_name + ', ' + homepage
+    domain, homepage, description = defaults('legacycode.info', 'main', 'identity','')
 
     print(org_name, domain, homepage, description)
     create_repo_on_github_and_local(api_token, org_name, repo_name, description, domain)

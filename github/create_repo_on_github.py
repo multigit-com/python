@@ -3,7 +3,7 @@ sys.path.append('../')
 import requests
 from github.getHeaders import getHeaders
 
-
+# Create a repo on GitHub
 def create_repo_on_github(api_token, org_name, repo_folder, description="This is your first repository", domain = 'legacycode.info'):
     url = f'https://api.github.com/orgs/{org_name}/repos'
     print(url)
