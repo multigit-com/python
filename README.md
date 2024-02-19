@@ -1,5 +1,5 @@
+![Screenshot from 2024-02-19 14-12-28](https://github.com/multigit-com/python/assets/5669657/3bf51648-2967-455d-ba38-9cd1967765be)
 
-![obraz](https://github.com/multigit-com/python/assets/5669657/5364d20a-ad03-49b2-9251-142613975347)
 
 # [python.multigit.com](http://python.multigit.com)
 
