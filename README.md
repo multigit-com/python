@@ -4,6 +4,26 @@
 + [identity](http://identity.multigit.com)
 
 
+
+**MultiGit** project facilitate the process of cloning multiple repositories across different organizations, branches, and projects on GitHub.
+**MultiGit** is designed for software developers managing or contributing to large-scale projects with complex structures. 
+The project operates by reading specified .orgs, .projects, and .branches files to determine which repositories need to be cloned or pulled. 
+This approach allows for an automated, organized, and efficient workflow, reducing the manual effort of dealing with each repository individually.
+
+### Key features include
+
+- Automatic cloning or pulling of repositories based on lists provided in .orgs, .projects, and .branches files.
+- Skips cloning forked repositories to focus on original content.
+- Verifies if each project adheres to a predefined structure as specified in a .structure file, offering to create a repository in the organization if it doesn't exist.
+- Provides installation and configuration instructions to ensure proper setup, including upgrading pip, installing dependencies via a requirements.txt file, and executing shell commands for git operations.
+
+### How it works
+
+The scripts included, particularly `multigit.py`, enable execution of git clone commands for each repository, emphasizing the need for git configurations and appropriate permissions. Given its sensitivity, the project also stresses the importance of securely managing the GitHub API token used in the cloning process.
+
+Overall, this GitHub project represents a practical utility for developers working in large-scale, multi-repository environments, streamlining the management of such projects through automation and structured checks.
+
+
 multigit cloning for many different organization, branches, projects on github
 + load projects from `.projects` file
 + load branches from `.branches` file
