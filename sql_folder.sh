@@ -5,14 +5,14 @@ SQL_FOLDER=$1
 HOME_FOLDER=$2
 [ -z $HOME_FOLDER ] && HOME_FOLDER=~
 
-# the configurartion is working with cdn-docker-compose and link11postgres projects
-DB_PASS=$(cat $HOME_FOLDER/postgresql/.password)
-DB_USER=$(cat $HOME_FOLDER/postgresql/.username)
-DB_NAME=$(cat $HOME_FOLDER/postgresql/.database)
-DB_PORT=$(cat $HOME_FOLDER/postgresql/.port)
-DB_HOST=$(cat $HOME_FOLDER/postgresql/.host)
+# Config
+DB_PASS=$(cat $HOME_FOLDER/psql/.password)
+DB_USER=$(cat $HOME_FOLDER/psql/.username)
+DB_NAME=$(cat $HOME_FOLDER/psql/.database)
+DB_PORT=$(cat $HOME_FOLDER/psql/.port)
+DB_HOST=$(cat $HOME_FOLDER/psql/.host)
 
-# connect to DB and run SELECT
+# Connect to DB and run Query
 export PGPASSWORD=$DB_PASS
 
 # Check if no arguments provided 
@@ -34,9 +34,11 @@ do
         if [ -f "$SQL_FILE_PATH" ];
         then
           echo $SQL_FILE_PATH
+          
           # If $SQL_FILE is a file, import it
           psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f $SQL_FILE_PATH
           #echo "Imported $SQL_FILE successfully"
+          
           # check connection status
           if [ "$?" -eq "0" ]
           then
@@ -52,6 +54,4 @@ do
    fi
 done
 
-
-# unset the PGPASSWORD
 unset PGPASSWORD
