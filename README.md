@@ -1,3 +1,6 @@
+
+![obraz](https://github.com/multigit-com/python/assets/5669657/5364d20a-ad03-49b2-9251-142613975347)
+
 # [python.multigit.com](http://python.multigit.com)
 
 + [www.multigit.com](http://www.multigit.com)
@@ -6,6 +9,7 @@
 
 
 **MultiGit** project facilitate the process of cloning multiple repositories across different organizations, branches, and projects on GitHub.
+
 **MultiGit** is designed for software developers managing or contributing to large-scale projects with complex structures. 
 The project operates by reading specified .orgs, .projects, and .branches files to determine which repositories need to be cloned or pulled. 
 This approach allows for an automated, organized, and efficient workflow, reducing the manual effort of dealing with each repository individually.
