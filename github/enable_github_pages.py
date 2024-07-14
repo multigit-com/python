@@ -1,7 +1,9 @@
 import sys
+import requests
+
 sys.path.append('../')
 from github.getHeaders import getHeaders
-import requests
+
 
 
 

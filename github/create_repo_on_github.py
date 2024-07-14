@@ -1,6 +1,6 @@
 import sys
-sys.path.append('../')
 import requests
+sys.path.append('../')
 from github.getHeaders import getHeaders
 
 # Create a repo on GitHub

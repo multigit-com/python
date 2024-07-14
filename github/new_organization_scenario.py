@@ -17,7 +17,7 @@ def new_organization_scenario(api_token, repos, org_name, repo_name, path_name):
     local_path = path_name + "/" + org_name
     create_path(local_path)
 
-    domain, homepage, description = defaults('legacycode.info', 'main', 'identity','')
+    domain, homepage, description = defaults('legacycode.info', 'identity','', org_name)
 
     print(org_name, domain, homepage, description)
     create_repo_on_github_and_local(api_token, org_name, repo_name, description, domain)

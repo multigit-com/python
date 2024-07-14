@@ -1,33 +1,7 @@
-![Screenshot from 2024-02-19 14-12-28](https://github.com/multigit-com/python/assets/5669657/3bf51648-2967-455d-ba38-9cd1967765be)
-
-
 # [python.multigit.com](http://python.multigit.com)
 
 + [www.multigit.com](http://www.multigit.com)
 + [identity](http://identity.multigit.com)
-+ [roadmap](http://roadmap.multigit.com)
-
-
-
-
-**MultiGit** project facilitate the process of cloning multiple repositories across different organizations, branches, and projects on GitHub.
-
-**MultiGit** is designed for software developers managing or contributing to large-scale projects with complex structures. 
-The project operates by reading specified .orgs, .projects, and .branches files to determine which repositories need to be cloned or pulled. 
-This approach allows for an automated, organized, and efficient workflow, reducing the manual effort of dealing with each repository individually.
-
-### Key features include
-
-- Automatic cloning or pulling of repositories based on lists provided in .orgs, .projects, and .branches files.
-- Skips cloning forked repositories to focus on original content.
-- Verifies if each project adheres to a predefined structure as specified in a .structure file, offering to create a repository in the organization if it doesn't exist.
-- Provides installation and configuration instructions to ensure proper setup, including upgrading pip, installing dependencies via a requirements.txt file, and executing shell commands for git operations.
-
-### How it works
-
-The scripts included, particularly `multigit.py`, enable execution of git clone commands for each repository, emphasizing the need for git configurations and appropriate permissions. Given its sensitivity, the project also stresses the importance of securely managing the GitHub API token used in the cloning process.
-
-Overall, this GitHub project represents a practical utility for developers working in large-scale, multi-repository environments, streamlining the management of such projects through automation and structured checks.
 
 
 multigit cloning for many different organization, branches, projects on github
@@ -41,11 +15,29 @@ options:
   + check if each project has correct structure, projects, files inside, based on `.structure` file
     + if they don't have create a repo in org and clone 
 
+## start
+
+
+local
+```bash
+python3 -m venv path/to/venv
+source path/to/venv/bin/activate
+python3 -m pip install requests
+python3 ./multigit.py ~/github
+```
+
 
 ## Init
 python update
 ```bash
-python -m pip install --upgrade pip
+sudo python3 -m pip install --upgrade pip
+```
+
+local
+```bash
+python3 -m venv path/to/venv
+source path/to/venv/bin/activate
+python3 -m pip install requests
 ```
 
 init requirements
@@ -71,7 +63,6 @@ chmod +x ./init.sh
 
 packages
 ```shell
-python -m pip install requests      # for Python 2.x (if still used)
 python3 -m pip install requests     # for Python 3.x
 ```
 

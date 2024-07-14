@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../')
+
 from local.non_git_folders_in_path import non_git_folders_in_path
 from function.differenceElementsInArrays import differenceElementsInArrays
 from local.load_file import load_file
@@ -18,7 +19,6 @@ def create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, d
     # remove from array existing elements from another array
     filtered_non_git_folders = differenceElementsInArrays(non_git_local_repos, not_expected_folders)
     print(filtered_non_git_folders)
-    # not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
     for repo_folder in filtered_non_git_folders:
         # get last folder from path
         repo_name = repo_folder.split('/')[-1]

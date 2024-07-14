@@ -1,8 +1,8 @@
 import sys
+import requests
 sys.path.append('../')
 from github.get_repos import get_repos
 from github.getHeaders import getHeaders
-import requests
 
 # List all repositories in the organization
 # Set your custom domain (must be configured in your DNS) for each repository in Organisation

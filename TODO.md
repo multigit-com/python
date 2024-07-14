@@ -1,9 +1,14 @@
 # TODO
 
+## template
 
-czy kazdy projekt ma przypsiana domene
-czy domena wskazuje na github
-czy usatwienia dns sa dla wszystkich domen
+- [] stworzenie dopasowania, typ do nazwy: www offer.web.pl
+
+### testowanie
+
+- czy kazdy projekt ma przypsiana domene
+- czy domena wskazuje na github
+- czy usatwienia dns sa dla wszystkich domen
 
 co wyswietla - screenshoot
 

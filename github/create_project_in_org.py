@@ -6,6 +6,7 @@ from local.create_path import create_path
 from github.defaults import defaults
 
 
+# TODO: not used?
 # Create project on Github Organisation=@org_name in
 def create_project_in_org(org_name, repo_name, path_name):
     # print(repos)
@@ -13,6 +14,7 @@ def create_project_in_org(org_name, repo_name, path_name):
     local_path = path_name + "/" + org_name
     create_path(local_path)
 
+    # TODO: fix
     domain, homepage, description = defaults(org_name, path_name)
 
 

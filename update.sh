@@ -3,14 +3,11 @@ gituser=$1
 #[ -z $gituser ] && gituser=git
 [ -z $gituser ] && gituser=$(git config user.name)
 #echo "init [gitusername]" && exit 1
-touch .projects .orgs .branches .token
-python3 -m pip install requests
 # generate private cert
 cat $HOME/.ssh/authorized_keys
-ssh-keygen -t ed25519 -C "$gituser@github.com" -f $HOME/.ssh/github
 ls $HOME/.ssh/
 cat $HOME/.ssh/github.pub
-open https://github.com/settings/keys
+xdg-open https://github.com/settings/keys
 # add the ssh pub key
 chmod 600  $HOME/.ssh/*
 chmod 755  $HOME/.ssh/*.pub
@@ -20,4 +17,5 @@ ssh -i ~/.ssh/github -T "$gituser@github.com"
 # TOKEN
 open https://github.com/settings/tokens
 #git remote set-url origin git@github.com:hexagonalsandbox/book.git
+#git remote set-url origin git@github.com:multigit-com/python.git
 git remote show origin

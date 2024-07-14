@@ -1,9 +1,16 @@
 import os
 import sys
+
+from github.create_repo_on_not_git_repo_folder import create_repo_on_not_git_repo_folder
+
 sys.path.append('../')
+from function.flat_array import flat_array
+
 from function.extract_domain_name_from_url import extract_domain_name_from_url
 from github.change_default_branch import change_default_branch
+from github.get_domain_from_page import get_domain_from_page
 from github.create_notexisting_folder import create_notexisting_folder
+from github.get_param_from_repo import get_param_from_repo
 from github.defaults import defaults
 from github.set_github_pages_domain import set_github_pages_domain
 from local.create_path import create_path
@@ -20,39 +27,64 @@ from github.set_domain_on_github_org_pages import set_domain_on_github_org_pages
 ## code: api_token
 ## env: GITHUB_API_TOKEN
 #
-def update_organization_projects(api_token, org_name, repos, path_name):
+def update_organization_projects(api_token, org_name, repos, domain_name, path_name, root_path):
     # print(repos)
+    branch = get_param_from_repo(repos, 'default_branch')
+
+    if branch != 'main':
+        change_default_branch(api_token, org_name,'main')
+
+    branch = get_param_from_repo(repos, 'default_branch')
+    if not branch:
+        branch = 'main'
+        change_default_branch(api_token, org_name, 'main')
+
+    print('branch: ' + branch)
+    #exit()
+
     local_path = path_name + "/" + org_name
     create_path(local_path)
+    #print(local_path, path_name)
 
-    domain, homepage, description = defaults('moduletool.com', 'main', 'identity','')
+    domain, homepage, description = defaults(domain_name, 'main', 'identity','')
 
     #print(org_name, domain, homepage, description)
     #create_repo_on_github(api_token, org_name, repo_name, description, domain)
+
     #exit()
     #set_domain_on_github_org_pages(api_token, org_name, domain)
     #set_github_pages_domain(api_token, org_name, domain)
     #exit()
-
+    #print(repos)
     # update_repo_on_github(api_token, org_name, repo_name, description, domain)
     if repos:
         for repo in repos:
+            #print(repo)
+            #page_domain = get_domain_from_page(api_token, org_name, repo)
+            #print(page_domain)
+            #exit()
+
             if 'clone_url' in repo:
                 # update_default_branch_on_github(api_token, org_name, repo['name'], branch)
                 #rename_branch_on_github(api_token, org_name, repo['name'], 'master', 'main')
                 clone_repo(repo['clone_url'], repo['name'], local_path)
-    exit()
+    #exit()
 
-    # change_default_branch(api_token, org_name, repo_name, description, homepage)
 
     # clone_repos_from_org(org_name, repos, path_name, local_path)
-    root_path = os.path.dirname(os.path.realpath(__file__))
-    create_notexisting_folder(api_token, org_name, repos, local_path, domain, root_path)
-    # exit()
-    create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, domain)
+    #create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, domain)
 
-    change_default_branch(api_token, org_name)
+    # print(repos)
+    repos_in_orgs = flat_array(repos, 'name')
+    print(repos_in_orgs)
 
+    create_notexisting_folder(api_token, org_name, repos, local_path, domain, root_path, branch)
+    #configure_github_pages_branch(api_token, org_name, 'main')
+
+
+
+    set_github_pages_domain(api_token, org_name, domain, branch)
+    exit()
     # push_all_repos(api_token, org_name, repos, local_path)
     # pull_all_repos(local_path)
     init_local_repo(local_path)
@@ -62,4 +94,4 @@ def update_organization_projects(api_token, org_name, repos, path_name):
     # configure_github_pages_domain(api_token, org_name, domain)
     # print(f'{org_name} / {repo_name} / {branch}..')
     set_github_pages_domain(api_token, org_name, domain)
-    set_github_pages_domain(api_token, org_name, domain)
+    #set_github_pages_domain(api_token, org_name, domain)

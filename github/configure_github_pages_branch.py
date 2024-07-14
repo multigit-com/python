@@ -1,9 +1,9 @@
 import sys
+import requests
 
 sys.path.append('../')
 from github.getHeaders import getHeaders
 from github.get_repos import get_repos
-import requests
 
 # Iterate over all pages of repositories
 # Set the GitHub Pages domain, branch, path for each repo

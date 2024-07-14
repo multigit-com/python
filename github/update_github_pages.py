@@ -1,7 +1,7 @@
 import sys
+import requests
 sys.path.append('../')
 from github.getHeaders2 import getHeaders2
-import requests
 
 
 def update_github_pages(api_token, org_name, repo_name, branch='main', domain=None, path='/'):

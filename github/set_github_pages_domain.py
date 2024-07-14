@@ -1,13 +1,13 @@
 import sys
+import requests
 sys.path.append('../')
 from github.get_repository_list_wtih_github_pages import get_repository_list_wtih_github_pages
 from github.getHeaders import getHeaders
 from github.enable_github_pages import enable_github_pages
 from github.update_github_pages import update_github_pages
-import requests
 
 
-def set_github_pages_domain(api_token, org_name, domain):
+def set_github_pages_domain(api_token, org_name, domain, default_branch):
     url = f'https://api.github.com/orgs/{org_name}/repos'
     # Iterate over all pages of repositories
     while url:
@@ -26,26 +26,29 @@ def set_github_pages_domain(api_token, org_name, domain):
             else:
                 subdomain = repo['name'] + "." + domain
 
-            print("0", repo['name'])
+            print("==========", repo)
+            if repo['name']:
+                print("0", repo['name'])
 
-            result = get_repository_list_wtih_github_pages(api_token, org_name, repo['name'])
-            print("1", result)
-            # repo['default_branch']
-            branch = 'main'
+                result = get_repository_list_wtih_github_pages(api_token, org_name, repo['name'])
+                print("1", result)
+                # repo['default_branch']
+                branch = default_branch
+                #branch = 'master'
 
-            if not result:
-                result = enable_github_pages(api_token, org_name, repo['name'], branch, subdomain)
+                if not result:
+                    result = enable_github_pages(api_token, org_name, repo['name'], branch, subdomain)
 
-            print('2', result)
+                print('2', result)
 
-            if result and not result['cname']:
-                result = update_github_pages(api_token, org_name, repo['name'], branch, subdomain)
+                if result and not result['cname']:
+                    result = update_github_pages(api_token, org_name, repo['name'], branch, subdomain)
 
-            print('3', result)
+                print('3', result)
 
-            # if (result['status'] == 'built'):
+                # if (result['status'] == 'built'):
 
-            # update_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
+                # update_github_pages(api_token, org_name, repo['name'], repo['default_branch'], subdomain)
 
         # Fetch the next page of repositories, if available
         url = response.links.get('next', {}).get('url', None)

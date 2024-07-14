@@ -1,7 +1,7 @@
 import sys
+import requests
 sys.path.append('../')
 from github.getHeaders import getHeaders
-import requests
 
 # Change the default branch for a
 def change_default_branch(api_token, org_name, default_branch='main'):
