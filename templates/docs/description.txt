@@ -1,1 +1,0 @@
-Documentation {domain} on repository {repository} for {organization}
