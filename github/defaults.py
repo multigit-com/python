@@ -15,9 +15,8 @@ def defaults(domain='', repo_name='identity', homepage='', org_name=''):
     if homepage:
         # set_github_pages_domain(api_token, org_name, domain)
         # homepage = f'{org_name}.github.io/{repo_folder}'
-        domain = extract_domain_name_from_url(homepage)
-
-    if not homepage:
+        domain = extract_domain_name_from_url(homepage) + domain
+    else:
         homepage = 'http://www.' + domain
 
     description = repo_name + ', ' + homepage

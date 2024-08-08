@@ -51,9 +51,8 @@ if __name__ == "__main__":
     for row in orgs:
         org_name = row.split(' ')[0]
         domain = row.split(' ')[1]
-        print(org_name, domain)
-        print(f"Fetching repos for org: {org_name}")
-
+        print(row, org_name, domain)
+        print(f"!!! Fetching repos for org: {org_name}")
         if has_valid_credentials(org_name, headers):
             repos = get_repos_from_org(org_name, headers)
             # print(repos)

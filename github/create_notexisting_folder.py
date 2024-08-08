@@ -17,14 +17,19 @@ def create_notexisting_folder(api_token, org_name, repos_in_orgs, path_folder, d
     expected_folders = fromFilenametoLinesAsArray(folders_path)
 
     if not expected_folders:
-        exit()
+        exit('No folders found in.folders file. Please check the file.')
 
     if not branch:
-        exit()
+        exit('Default branch not provided. Please provide a default branch in.default_branch.txt file.')
+
+    if not repos_in_orgs:
+        exit('No expected repositories found in.folders file. Please check the file.')
+
 
     # Call the function with your arrays
     # result = arrayElementsAreIncluded(expected_folders, repos_in_orgs)
     # print(result)
+
     not_existing_folder = differenceElementsInArrays(expected_folders, repos_in_orgs)
     print(not_existing_folder)
 

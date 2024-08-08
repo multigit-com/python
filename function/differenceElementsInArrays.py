@@ -2,6 +2,7 @@
 def differenceElementsInArrays(array_a, array_b):
     # Convert both arrays to sets
     set_a = set(array_a)
+    print('array_b', array_b)
     set_b = set(array_b)
 
     # Return the difference

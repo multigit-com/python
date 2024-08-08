@@ -15,6 +15,16 @@ options:
   + check if each project has correct structure, projects, files inside, based on `.structure` file
     + if they don't have create a repo in org and clone 
 
+
+
+## Init
+
+
+```bash
+git clone https://github.com/docutemp/templates.git
+```
+
+
 ## start
 
 
@@ -25,6 +35,7 @@ source path/to/venv/bin/activate
 python3 -m pip install requests
 python3 ./multigit.py ~/github
 ```
+
 
 
 ## Init

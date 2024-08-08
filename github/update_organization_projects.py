@@ -57,28 +57,35 @@ def update_organization_projects(api_token, org_name, repos, domain_name, path_n
     #exit()
     #print(repos)
     # update_repo_on_github(api_token, org_name, repo_name, description, domain)
+    repo_list = []
     if repos:
         for repo in repos:
-            #print(repo)
+            print('repo',repo)
             #page_domain = get_domain_from_page(api_token, org_name, repo)
             #print(page_domain)
-            #exit()
+            # exit()
 
             if 'clone_url' in repo:
                 # update_default_branch_on_github(api_token, org_name, repo['name'], branch)
                 #rename_branch_on_github(api_token, org_name, repo['name'], 'master', 'main')
                 clone_repo(repo['clone_url'], repo['name'], local_path)
+                # repo_list.append(repo['name'])
+
     #exit()
 
 
     # clone_repos_from_org(org_name, repos, path_name, local_path)
     #create_repo_on_not_git_repo_folder(api_token, repos, org_name, local_path, domain)
-
+    # print('----')
     # print(repos)
+    # print(repo_list)
     repos_in_orgs = flat_array(repos, 'name')
     print(repos_in_orgs)
+    print('----')
 
-    create_notexisting_folder(api_token, org_name, repos, local_path, domain, root_path, branch)
+    # exit()
+
+    create_notexisting_folder(api_token, org_name, repos_in_orgs, local_path, domain, root_path, branch)
     #configure_github_pages_branch(api_token, org_name, 'main')
 
 
